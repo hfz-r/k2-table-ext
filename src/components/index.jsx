@@ -6,7 +6,7 @@ import Table from './Table';
 
 const initialResource = fetchPayload();
 
-const Main = ({ payload }) => {
+const Main = () => {
   const [resource, setResource] = useState(initialResource);
 
   const data = useMemo(
@@ -42,10 +42,6 @@ const Main = ({ payload }) => {
   );
 
   return <Table columns={columns} data={data} resource={resource} />;
-};
-
-Main.propTypes = {
-  payload: PropTypes.shape,
 };
 
 export default Main;

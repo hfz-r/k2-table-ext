@@ -11,8 +11,6 @@ module.exports = {
     filename: `${common.path.jsFolder}/[name].[hash].js`,
     path: common.path.outputPath,
     chunkFilename: `${common.path.jsFolder}/[name].[chunkhash].js`,
-    // compile to library model
-    // ...common.lib,
   },
   optimization: {
     minimizer: [

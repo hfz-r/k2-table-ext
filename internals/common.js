@@ -11,8 +11,4 @@ module.exports = {
     cssFolder: 'css',
     jsFolder: 'js',
   },
-  lib: {
-    library: 'Widget',
-    libraryTarget: 'umd',
-  },
 };

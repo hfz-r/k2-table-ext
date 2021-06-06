@@ -8,8 +8,6 @@ module.exports = {
     filename: '[name].js',
     path: common.path.outputPath,
     chunkFilename: '[name].js',
-    // compile to library model
-    // ...common.lib,
   },
   module: {
     rules: [
