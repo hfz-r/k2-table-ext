@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
-const url =
-  'https://bpmdev.affinhwangam.com/api/odata/v3/Commission_dbo_SunSysCoa_Investor';
+// const url = 'https://bpmdev.affinhwangam.com/api/odata/v3/Commission_dbo_COARebateFeeMgmt';
 
 const promiseWrapper = promise => {
   let status = 'pending';
@@ -33,8 +32,7 @@ const promiseWrapper = promise => {
 
 const fetchSMO = () => {
   return new Promise(resolve => {
-    fetch(url, {
-      mode: 'no-cors',
+    fetch('payload.json', {
       headers: {
         'Content-Type': 'application/json',
       },
