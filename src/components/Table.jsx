@@ -1,45 +1,91 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-console */
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useExpanded, useTable, useSortBy } from 'react-table';
+import {
+  useExpanded,
+  useFilters,
+  useGroupBy,
+  usePagination,
+  useTable,
+  useSortBy,
+} from 'react-table';
+import { fuzzyTextFilterFn, DefaultColumnFilter } from './Filters';
+import IndeterminateCheckbox from './Checkbox';
+import Pagination from './Pagination';
 
-const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }, ref) => {
-    const defaultRef = React.useRef();
-    const resolvedRef = ref || defaultRef;
+const Table = ({
+  columns,
+  data,
+  updateData,
+  skipReset,
+  renderSubComponent,
+}) => {
+  const filterTypes = useMemo(
+    () => ({
+      fuzzyText: fuzzyTextFilterFn,
+      text: (rows, id, filterValue) => {
+        return rows.filter(row => {
+          const rowValue = row.values[id];
+          return rowValue !== undefined
+            ? String(rowValue)
+                .toLocaleLowerCase()
+                .startsWith(String(filterValue).toLocaleLowerCase())
+            : true;
+        });
+      },
+    }),
+    []
+  );
 
-    React.useEffect(() => {
-      resolvedRef.current.indeterminate = indeterminate;
-    }, [resolvedRef, indeterminate]);
+  const defaultColumn = useMemo(
+    () => ({
+      Filter: DefaultColumnFilter,
+    }),
+    []
+  );
 
-    return <input type="checkbox" ref={resolvedRef} {...rest} />;
-  }
-);
-
-const Table = ({ columns, data, renderSubComponent }) => {
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
+    page,
     prepareRow,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    toggleHideColumn,
+    visibleColumns,
     allColumns,
     getToggleHideAllColumnsProps,
+    state: { pageIndex, pageSize, groupBy },
   } = useTable(
     {
       columns,
       data,
-      initialState: {
-        hiddenColumns: ['children[0].Id', 'children[0].Currency'],
-      },
+      defaultColumn,
+      filterTypes,
+      updateData,
+      autoResetPage: !skipReset,
+      autoResetSelectedRows: !skipReset,
+      disableMultiSort: true,
     },
+    useFilters,
+    useGroupBy,
     useSortBy,
-    useExpanded
+    useExpanded,
+    usePagination
   );
+
+  useEffect(() => {
+    toggleHideColumn('expander', !!groupBy.length);
+  }, [groupBy]);
 
   return (
     <>
@@ -50,7 +96,7 @@ const Table = ({ columns, data, renderSubComponent }) => {
         </div>
         {allColumns.map(column => (
           <div key={column.id}>
-            <label>
+            <label htmlFor="checkbox">
               <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
               {column.id}
             </label>
@@ -58,7 +104,7 @@ const Table = ({ columns, data, renderSubComponent }) => {
         ))}
         <br />
       </div>
-      <table {...getTableProps()} style={{ border: 'solid 1px blue' }}>
+      <table {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr
@@ -67,31 +113,34 @@ const Table = ({ columns, data, renderSubComponent }) => {
             >
               {headerGroup.headers.map((column, headerIndex) => (
                 <th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
                   key={`headercol-${headerIndex}`}
-                  style={{
-                    borderBottom: 'solid 3px red',
-                    background: 'aliceblue',
-                    color: 'black',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                  }}
+                  {...column.getHeaderProps()}
                 >
-                  {column.render('Header')}
-                  <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? ' 🔻'
-                        : ' 🔺'
-                      : ''}
-                  </span>
+                  {/* Render the columns group-by and sort-by */}
+                  <div>
+                    {column.canGroupBy ? (
+                      <span {...column.getGroupByToggleProps()}>
+                        {column.isGrouped ? '🔸 ' : '🔹 '}
+                      </span>
+                    ) : null}
+                    <span {...column.getSortByToggleProps()}>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? '🔻 '
+                          : '🔺 '
+                        : ''}
+                      {column.render('Header')}
+                    </span>
+                  </div>
+                  {/* Render the columns filter UI */}
+                  <div>{column.canFilter ? column.render('Filter') : null}</div>
                 </th>
               ))}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map(row => {
+          {page.map(row => {
             prepareRow(row);
             const rowProps = row.getRowProps();
             return (
@@ -99,33 +148,50 @@ const Table = ({ columns, data, renderSubComponent }) => {
                 <tr {...rowProps}>
                   {row.cells.map((cell, cellIndex) => {
                     return (
-                      <td
-                        {...cell.getCellProps()}
-                        key={`bodycol-${cellIndex}`}
-                        style={{
-                          padding: '10px',
-                          border: 'solid 1px gray',
-                          background: 'papayawhip',
-                        }}
-                      >
-                        {cell.render('Cell')}
+                      <td key={`bodycol-${cellIndex}`} {...cell.getCellProps()}>
+                        {cell.isGrouped ? (
+                          <>
+                            <span {...row.getToggleRowExpandedProps()}>
+                              {row.isExpanded ? '🔽 ' : '▶️ '}
+                            </span>
+                            {cell.render('Cell')} ({row.subRows.length})
+                          </>
+                        ) : cell.isAggregated ? (
+                          cell.render('Aggregated')
+                        ) : cell.isPlaceholder ? null : (
+                          cell.render('Cell')
+                        )}
                       </td>
                     );
                   })}
                 </tr>
-                {row.isExpanded && renderSubComponent({ row })}
+                {row.isExpanded && renderSubComponent({ row, visibleColumns })}
               </React.Fragment>
             );
           })}
         </tbody>
       </table>
+      <Pagination
+        gotoPage={gotoPage}
+        previousPage={previousPage}
+        nextPage={nextPage}
+        canPreviousPage={canPreviousPage}
+        canNextPage={canNextPage}
+        pageCount={pageCount}
+        pageIndex={pageIndex}
+        pageOptions={pageOptions}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+      />
     </>
   );
 };
 
 Table.propTypes = {
-  columns: PropTypes.shape,
   data: PropTypes.shape,
+  updateData: PropTypes.shape,
+  columns: PropTypes.shape,
+  skipReset: PropTypes.bool,
   renderSubComponent: PropTypes.node,
 };
 

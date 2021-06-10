@@ -44,8 +44,8 @@ const fetchSMO = () => {
 };
 
 export function fetchPayload() {
-  const pl = fetchSMO();
+  const smo = fetchSMO();
   return {
-    payload: promiseWrapper(pl),
+    payload: promiseWrapper(smo),
   };
 }
