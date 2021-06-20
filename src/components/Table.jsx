@@ -14,6 +14,8 @@ import {
 import { fuzzyTextFilterFn, DefaultColumnFilter } from './Filters';
 import IndeterminateCheckbox from './Checkbox';
 import Pagination from './Pagination';
+// import ToggleMenu from './Menu';
+import Menu from './Menu_';
 
 const Table = ({
   columns,
@@ -116,22 +118,99 @@ const Table = ({
                   key={`headercol-${headerIndex}`}
                   {...column.getHeaderProps()}
                 >
-                  {/* Render the columns group-by and sort-by */}
-                  <div>
-                    {column.canGroupBy ? (
-                      <span {...column.getGroupByToggleProps()}>
-                        {column.isGrouped ? '🔸 ' : '🔹 '}
-                      </span>
-                    ) : null}
-                    <span {...column.getSortByToggleProps()}>
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? '🔻 '
-                          : '🔺 '
-                        : ''}
-                      {column.render('Header')}
-                    </span>
+                  <div style={{ boxSizing: 'border-box' }}>
+                    <div
+                      style={{
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        verticalAlign: 'middle',
+                        textAlign: 'start',
+                        flexFlow: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'flex-start',
+                        flex: '1',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <div
+                        {...column.getSortByToggleProps()}
+                        style={{
+                          padding: '8px',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {column.render('Header')}
+                        <div
+                          style={{
+                            display: 'inline-flex',
+                            flexDirection: 'column',
+                            verticalAlign: 'middle',
+                          }}
+                        >
+                          {column.isSorted ? (
+                            <>
+                              <svg
+                                width="10"
+                                height="5"
+                                viewBox="0 0 10 5"
+                                style={{
+                                  fill: `${
+                                    column.isSortedDesc ? '#9ba7b4' : '#515964'
+                                  }`,
+                                  marginBottom: '4px',
+                                  marginLeft: '8px',
+                                  marginRight: '8px',
+                                  display: 'inline-block',
+                                }}
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M4.767.276L8.395 4.04c.142.147.138.382-.01.524-.069.066-.16.104-.257.104H.872c-.205 0-.37-.166-.37-.37 0-.097.036-.189.103-.258L4.233.276c.142-.147.377-.151.524-.009l.01.01z"
+                                ></path>
+                              </svg>
+                              <svg
+                                width="10"
+                                height="5"
+                                viewBox="0 0 10 5"
+                                style={{
+                                  fill: `${
+                                    column.isSortedDesc ? '#515964' : '#9ba7b4'
+                                  }`,
+                                  marginLeft: '8px',
+                                  marginRight: '8px',
+                                  display: 'inline-block',
+                                }}
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M4.233 4.724L.605.96C.463.814.467.579.615.437.684.371.775.333.872.333h7.256c.205 0 .37.166.37.37 0 .097-.036.189-.103.258L4.767 4.724c-.142.147-.377.151-.524.009l-.01-.01z"
+                                ></path>
+                              </svg>
+                            </>
+                          ) : (
+                            ''
+                          )}
+                        </div>
+                      </div>
+                      {headerIndex > 0 && (
+                        <Menu
+                          column={column}
+                          allColumns={allColumns}
+                          visibleColumns={visibleColumns}
+                        />
+                      )}
+                    </div>
                   </div>
+                  {/* <div>
+                    <div {...column.getSortByToggleProps()}>
+                      {column.canGroupBy ? (
+                        <span {...column.getGroupByToggleProps()}>
+                          {column.isGrouped ? '🔸 ' : '🔹 '}
+                        </span>
+                      ) : null}
+                    </div>
+                  </div> */}
                   {/* Render the columns filter UI */}
                   <div>{column.canFilter ? column.render('Filter') : null}</div>
                 </th>
