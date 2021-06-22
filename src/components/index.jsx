@@ -125,7 +125,7 @@ const Main = props => {
 
   return (
     <>
-      <button className="btn-reset" type="button" onClick={resetData}>
+      <button type="button" onClick={resetData}>
         Reset Data
       </button>
       <br />

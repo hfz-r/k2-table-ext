@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   useExpanded,
@@ -12,10 +12,8 @@ import {
   useSortBy,
 } from 'react-table';
 import { fuzzyTextFilterFn, DefaultColumnFilter } from './Filters';
-import IndeterminateCheckbox from './Checkbox';
 import Pagination from './Pagination';
-// import ToggleMenu from './Menu';
-import Menu from './Menu_';
+import { ConnectedMenu, MenuWrapper } from './Menu__';
 
 const Table = ({
   columns,
@@ -91,21 +89,10 @@ const Table = ({
 
   return (
     <>
-      <div>
-        <div>
-          <IndeterminateCheckbox {...getToggleHideAllColumnsProps()} /> Toggle
-          All
-        </div>
-        {allColumns.map(column => (
-          <div key={column.id}>
-            <label htmlFor="checkbox">
-              <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
-              {column.id}
-            </label>
-          </div>
-        ))}
-        <br />
-      </div>
+      <ConnectedMenu
+        columns={allColumns}
+        toggleAll={getToggleHideAllColumnsProps}
+      />
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
@@ -193,24 +180,14 @@ const Table = ({
                           )}
                         </div>
                       </div>
-                      {headerIndex > 0 && (
-                        <Menu
+                      {column.id !== 'expander' && (
+                        <MenuWrapper
+                          key={`menu-${headerIndex}`}
                           column={column}
-                          allColumns={allColumns}
-                          visibleColumns={visibleColumns}
                         />
                       )}
                     </div>
                   </div>
-                  {/* <div>
-                    <div {...column.getSortByToggleProps()}>
-                      {column.canGroupBy ? (
-                        <span {...column.getGroupByToggleProps()}>
-                          {column.isGrouped ? '🔸 ' : '🔹 '}
-                        </span>
-                      ) : null}
-                    </div>
-                  </div> */}
                   {/* Render the columns filter UI */}
                   <div>{column.canFilter ? column.render('Filter') : null}</div>
                 </th>
