@@ -58,7 +58,15 @@ const Table = ({ parentRow, childData }) => {
     );
 
   return (
-    <table {...getTableProps()}>
+    <table
+      {...getTableProps()}
+      style={{
+        width: '80%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        backgroundColor: 'floralwhite',
+      }}
+    >
       <thead>
         {headerGroups.map(headerGroup => (
           <tr
@@ -66,14 +74,51 @@ const Table = ({ parentRow, childData }) => {
             {...headerGroup.getHeaderGroupProps()}
           >
             {headerGroup.headers.map((column, headerIndex) => (
-              <th
-                key={`headercol-${headerIndex}`}
-                {...column.getHeaderProps(column.getSortByToggleProps())}
-              >
-                {column.render('Header')}
-                <span>
-                  {column.isSorted ? (column.isSortedDesc ? ' 🔻' : ' 🔺') : ''}
-                </span>
+              <th key={`headercol-${headerIndex}`} {...column.getHeaderProps()}>
+                <div className="column-wrapper">
+                  <div className="column-header">
+                    <div
+                      {...column.getSortByToggleProps()}
+                      className="header-content"
+                    >
+                      {column.render('Header')}
+                      <div className="sort-icon-wrapper">
+                        {column.isSorted ? (
+                          <>
+                            <svg
+                              width="10"
+                              height="5"
+                              viewBox="0 0 10 5"
+                              className={`sort-icon sort-icon--asc ${
+                                !column.isSortedDesc && 'sort-icon--active'
+                              }`}
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M4.767.276L8.395 4.04c.142.147.138.382-.01.524-.069.066-.16.104-.257.104H.872c-.205 0-.37-.166-.37-.37 0-.097.036-.189.103-.258L4.233.276c.142-.147.377-.151.524-.009l.01.01z"
+                              ></path>
+                            </svg>
+                            <svg
+                              width="10"
+                              height="5"
+                              viewBox="0 0 10 5"
+                              className={`sort-icon sort-icon--desc ${
+                                column.isSortedDesc && 'sort-icon--active'
+                              }`}
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M4.233 4.724L.605.96C.463.814.467.579.615.437.684.371.775.333.872.333h7.256c.205 0 .37.166.37.37 0 .097-.036.189-.103.258L4.767 4.724c-.142.147-.377.151-.524.009l-.01-.01z"
+                              ></path>
+                            </svg>
+                          </>
+                        ) : (
+                          ''
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </th>
             ))}
           </tr>

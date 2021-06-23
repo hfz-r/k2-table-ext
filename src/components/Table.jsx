@@ -105,51 +105,23 @@ const Table = ({
                   key={`headercol-${headerIndex}`}
                   {...column.getHeaderProps()}
                 >
-                  <div style={{ boxSizing: 'border-box' }}>
-                    <div
-                      style={{
-                        cursor: 'pointer',
-                        display: 'inline-flex',
-                        verticalAlign: 'middle',
-                        textAlign: 'start',
-                        flexFlow: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'flex-start',
-                        flex: '1',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
+                  <div className="column-wrapper">
+                    <div className="column-header">
                       <div
                         {...column.getSortByToggleProps()}
-                        style={{
-                          padding: '8px',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
+                        className="header-content"
                       >
                         {column.render('Header')}
-                        <div
-                          style={{
-                            display: 'inline-flex',
-                            flexDirection: 'column',
-                            verticalAlign: 'middle',
-                          }}
-                        >
+                        <div className="sort-icon-wrapper">
                           {column.isSorted ? (
                             <>
                               <svg
                                 width="10"
                                 height="5"
                                 viewBox="0 0 10 5"
-                                style={{
-                                  fill: `${
-                                    column.isSortedDesc ? '#9ba7b4' : '#515964'
-                                  }`,
-                                  marginBottom: '4px',
-                                  marginLeft: '8px',
-                                  marginRight: '8px',
-                                  display: 'inline-block',
-                                }}
+                                className={`sort-icon sort-icon--asc ${
+                                  !column.isSortedDesc && 'sort-icon--active'
+                                }`}
                               >
                                 <path
                                   fillRule="evenodd"
@@ -160,14 +132,9 @@ const Table = ({
                                 width="10"
                                 height="5"
                                 viewBox="0 0 10 5"
-                                style={{
-                                  fill: `${
-                                    column.isSortedDesc ? '#515964' : '#9ba7b4'
-                                  }`,
-                                  marginLeft: '8px',
-                                  marginRight: '8px',
-                                  display: 'inline-block',
-                                }}
+                                className={`sort-icon sort-icon--desc ${
+                                  column.isSortedDesc && 'sort-icon--active'
+                                }`}
                               >
                                 <path
                                   fillRule="evenodd"
@@ -187,9 +154,11 @@ const Table = ({
                         />
                       )}
                     </div>
+                    {/* Render the columns filter UI */}
+                    <div className="header-filter-wrapper">
+                      {column.canFilter ? column.render('Filter') : null}
+                    </div>
                   </div>
-                  {/* Render the columns filter UI */}
-                  <div>{column.canFilter ? column.render('Filter') : null}</div>
                 </th>
               ))}
             </tr>

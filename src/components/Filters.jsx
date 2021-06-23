@@ -9,27 +9,40 @@ const fuzzyTextFilterFn = (rows, id, filterValue) =>
 
 fuzzyTextFilterFn.autoRemove = val => !val;
 
+const SettingIcon = () => (
+  <div className="header-filter-settings">
+    <svg
+      tabIndex="0"
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      className="header-filter-settings-icon"
+    >
+      <path
+        fillRule="evenodd"
+        d="M13.222 2H.778C.348 2 0 1.552 0 1s.348-1 .778-1h12.444c.43 0 .778.448.778 1s-.348 1-.778 1zM1.556 3.111l3.888 4.667v5.444c0 .43.349.778.778.778h1.556c.43 0 .778-.348.778-.778V7.778l3.888-4.667H1.556z"
+      ></path>
+    </svg>
+  </div>
+);
+
 const DefaultColumnFilter = ({
   column: { filterValue, preFilteredRows, setFilter },
 }) => {
   const count = preFilteredRows.length;
 
   return (
-    <div style={{ display: 'flex', flexFlow: 'row', alignItems: 'stretch' }}>
-      <input
-        value={filterValue || ''}
-        onChange={e => setFilter(e.target.value || undefined)}
-        placeholder={`Search ${count} records`}
-      />
-      <div style={{ marginLeft: '3px' }}>
-        <svg tabIndex="0" width="14" height="14" viewBox="0 0 14 14">
-          <path
-            fillRule="evenodd"
-            d="M13.222 2H.778C.348 2 0 1.552 0 1s.348-1 .778-1h12.444c.43 0 .778.448.778 1s-.348 1-.778 1zM1.556 3.111l3.888 4.667v5.444c0 .43.349.778.778.778h1.556c.43 0 .778-.348.778-.778V7.778l3.888-4.667H1.556z"
-          ></path>
-        </svg>
+    <>
+      <div className="header-filter filter-text-input">
+        <input
+          className="text-input__input"
+          value={filterValue || ''}
+          onChange={e => setFilter(e.target.value || undefined)}
+          placeholder={`Search ${count} records`}
+        />
       </div>
-    </div>
+      <SettingIcon />
+    </>
   );
 };
 
@@ -47,45 +60,46 @@ const NumberRangeColumnFilter = ({
   }, [id, preFilteredRows]);
 
   return (
-    <div
-      style={{
-        display: 'flex',
-      }}
-    >
-      <input
-        value={filterValue[0] || ''}
-        type="number"
-        onChange={e => {
-          const val = e.target.value;
-          setFilter((old = []) => [
-            val ? parseInt(val, 10) : undefined,
-            old[1],
-          ]);
-        }}
-        placeholder={`Min (${min})`}
-        style={{
-          width: '70px',
-          marginRight: '0.5rem',
-        }}
-      />
-      to
-      <input
-        value={filterValue[1] || ''}
-        type="number"
-        onChange={e => {
-          const val = e.target.value;
-          setFilter((old = []) => [
-            old[0],
-            val ? parseInt(val, 10) : undefined,
-          ]);
-        }}
-        placeholder={`Max (${max})`}
-        style={{
-          width: '70px',
-          marginLeft: '0.5rem',
-        }}
-      />
-    </div>
+    <>
+      <div className="header-filter filter-text-input">
+        <input
+          className="text-input__input"
+          value={filterValue[0] || ''}
+          type="number"
+          onChange={e => {
+            const val = e.target.value;
+            setFilter((old = []) => [
+              val ? parseInt(val, 10) : undefined,
+              old[1],
+            ]);
+          }}
+          placeholder={`Min (${min})`}
+          style={{
+            width: '70px',
+            marginRight: '0.5rem',
+          }}
+        />
+        to
+        <input
+          className="text-input__input"
+          value={filterValue[1] || ''}
+          type="number"
+          onChange={e => {
+            const val = e.target.value;
+            setFilter((old = []) => [
+              old[0],
+              val ? parseInt(val, 10) : undefined,
+            ]);
+          }}
+          placeholder={`Max (${max})`}
+          style={{
+            width: '70px',
+            marginLeft: '0.5rem',
+          }}
+        />
+      </div>
+      <SettingIcon />
+    </>
   );
 };
 
@@ -101,19 +115,25 @@ const SelectColumnFilter = ({
   }, [id, preFilteredRows]);
 
   return (
-    <select
-      value={filterValue}
-      onChange={e => {
-        setFilter(e.target.value || undefined);
-      }}
-    >
-      <option value="">All</option>
-      {options.map((option, i) => (
-        <option key={i} value={option}>
-          {option}
-        </option>
-      ))}
-    </select>
+    <>
+      <div className="header-filter filter-text-input">
+        <select
+          className="text-input__input"
+          value={filterValue}
+          onChange={e => {
+            setFilter(e.target.value || undefined);
+          }}
+        >
+          <option value="">All</option>
+          {options.map((option, i) => (
+            <option key={i} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+      <SettingIcon />
+    </>
   );
 };
 

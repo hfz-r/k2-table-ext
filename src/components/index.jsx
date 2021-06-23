@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import React, {
   useCallback,
@@ -125,10 +126,10 @@ const Main = props => {
 
   return (
     <>
-      <button type="button" onClick={resetData}>
+      {/* <button type="button" onClick={resetData}>
         Reset Data
       </button>
-      <br />
+      <br /> */}
       <Table
         columns={columns}
         data={data}

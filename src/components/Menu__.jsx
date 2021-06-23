@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-unused-vars */
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   connectMenu,
   ContextMenu,
@@ -16,12 +16,15 @@ const MENU_ID = 'k2-table-ext-menu';
 
 export const MenuWrapper = ({ column }) => {
   const toggleRef = useRef(null);
+  const menuRef = useRef(null);
+  const [visible, setVisible] = useState(false);
   const attributes = {
     'data-tooltip': 'Right/left click to see the menu',
-    className: 'k2-table-ext-menu-group',
+    className: 'k2-table-ext-menu-group--disabled',
   };
 
   const toggleMenu = e => {
+    setVisible(true);
     if (toggleRef) {
       e.stopPropagation();
       toggleRef.current.handleContextClick(e);
@@ -31,6 +34,19 @@ export const MenuWrapper = ({ column }) => {
   const handleClick = (e, data, target) => {
     target.setAttribute('data-tooltip', `${data.item} on column ${data.name}`);
   };
+
+  const handleClickOutside = event => {
+    if (visible && !menuRef?.current?.contains(event.target)) {
+      setVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [visible]);
 
   return (
     <>
@@ -43,17 +59,25 @@ export const MenuWrapper = ({ column }) => {
         collect={props => props}
         onMenuClick={handleClick}
       >
-        <div role="presentation" onClick={toggleMenu}>
+        <div
+          ref={menuRef}
+          role="presentation"
+          className={`header-menu header-menu--hover ${
+            visible ? 'header-menu--visible' : ''
+          }`}
+          onClick={toggleMenu}
+        >
           <svg
-            enableBackground="new 0 0 515.555 515.555"
             width="14"
-            height="14"
-            viewBox="0 0 515.555 515.555"
-            xmlns="http://www.w3.org/2000/svg"
+            height="12"
+            viewBox="0 0 14 12"
+            className="sort-icon-desc"
           >
-            <path d="m303.347 18.875c25.167 25.167 25.167 65.971 0 91.138s-65.971 25.167-91.138 0-25.167-65.971 0-91.138c25.166-25.167 65.97-25.167 91.138 0" />
-            <path d="m303.347 212.209c25.167 25.167 25.167 65.971 0 91.138s-65.971 25.167-91.138 0-25.167-65.971 0-91.138c25.166-25.167 65.97-25.167 91.138 0" />
-            <path d="m303.347 405.541c25.167 25.167 25.167 65.971 0 91.138s-65.971 25.167-91.138 0-25.167-65.971 0-91.138c25.166-25.167 65.97-25.167 91.138 0" />
+            <g fillRule="evenodd">
+              <rect width="14" height="2" rx="1" />
+              <rect width="14" height="2" y="5" rx="1" />
+              <rect width="14" height="2" y="10" rx="1" />
+            </g>
           </svg>
         </div>
       </ContextMenuTrigger>
