@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[0],{103:function(e,n,t){"use strict";t.r(n);var a,o=t(12),c=t.n(o),r=t(7),d=t.n(r),i=t(56),l=t.n(i),s=(t(32),t(57),t(58),Object(r.lazy)((()=>t.e(3).then(t.bind(null,111))))),u=e=>c()(r.Suspense,{fallback:a||(a=c()("div",{},void 0,"⏳"))},void 0,d.a.createElement(s,e)),b=document.querySelector('[name="k2-table-ext"]');l.a.createRoot(b).render(c()(u,{}))}},[[103,1,2]]]);
-//# sourceMappingURL=main.1e8d704df19508e65958.js.map
