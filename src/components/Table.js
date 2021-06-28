@@ -92,24 +92,27 @@ const Table = ({
       />
       <div className="tableWrap">
         <table {...getTableProps()}>
-          <thead>
+          <thead className="grid-column-headers">
             {headerGroups.map((headerGroup) => (
               <tr
                 key={`headerrow-${headerGroup.key}`}
+                className="table-column-headers-wrapper"
                 {...headerGroup.getHeaderGroupProps()}
               >
                 {headerGroup.headers.map((column, headerIndex) => (
                   <th
                     key={`headercol-${headerIndex}`}
                     {...column.getHeaderProps({
-                      className: column.collapse ? "collapse" : "",
+                      className: `grid-column-header-cell ${
+                        column.collapse ? "collapse" : ""
+                      }`,
                     })}
                   >
-                    <div className="column-wrapper">
-                      <div className="column-header">
+                    <div className="column-wrapper grid-column-header-cell-wrapper">
+                      <div className="column-header grid-column-header-cell-content">
                         <div
                           {...column.getSortByToggleProps()}
-                          className="header-content"
+                          className="header-content grid-column-header-text"
                         >
                           {column.render("Header")}
                           <div className="sort-icon-wrapper">
@@ -164,13 +167,13 @@ const Table = ({
               </tr>
             ))}
           </thead>
-          <tbody {...getTableBodyProps()}>
+          <tbody className="grid-body-content" {...getTableBodyProps()}>
             {page.map((row) => {
               prepareRow(row);
               const rowProps = row.getRowProps();
               return (
                 <React.Fragment key={`bodyrow-${rowProps.key}`}>
-                  <tr {...rowProps}>
+                  <tr className="grid-body-content-wrapper" {...rowProps}>
                     {row.cells.map((cell, cellIndex) => {
                       return (
                         <td
@@ -179,18 +182,20 @@ const Table = ({
                             className: cell.column.collapse ? "collapse" : "",
                           })}
                         >
-                          {cell.isGrouped ? (
-                            <>
-                              <span {...row.getToggleRowExpandedProps()}>
-                                {row.isExpanded ? "🔽 " : "▶️ "}
-                              </span>
-                              {cell.render("Cell")} ({row.subRows.length})
-                            </>
-                          ) : cell.isAggregated ? (
-                            cell.render("Aggregated")
-                          ) : cell.isPlaceholder ? null : (
-                            cell.render("Cell")
-                          )}
+                          <div className="grid-content-cell">
+                            {cell.isGrouped ? (
+                              <>
+                                <span {...row.getToggleRowExpandedProps()}>
+                                  {row.isExpanded ? "🔽 " : "▶️ "}
+                                </span>
+                                {cell.render("Cell")} ({row.subRows.length})
+                              </>
+                            ) : cell.isAggregated ? (
+                              cell.render("Aggregated")
+                            ) : cell.isPlaceholder ? null : (
+                              cell.render("Cell")
+                            )}
+                          </div>
                         </td>
                       );
                     })}

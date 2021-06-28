@@ -13,31 +13,39 @@ const Pagination = ({
   pageSize,
   setPageSize,
 }) => (
-  <>
-    <div className="pagination">
+  <div className="toolbar">
+    <div className="pagination toolbar-wrapper">
       <button
+        className="toolbar-button paging-first"
         type="button"
         onClick={() => gotoPage(0)}
         disabled={!canPreviousPage}
       >
-        {"<<"}
+        {"⏪"}
       </button>{" "}
       <button
+        className="toolbar-button paging-left"
         type="button"
         onClick={() => previousPage()}
         disabled={!canPreviousPage}
       >
-        {"<"}
-      </button>{" "}
-      <button type="button" onClick={() => nextPage()} disabled={!canNextPage}>
-        {">"}
+        {"◀️"}
       </button>{" "}
       <button
+        className="toolbar-button paging-right"
+        type="button"
+        onClick={() => nextPage()}
+        disabled={!canNextPage}
+      >
+        {"▶️"}
+      </button>{" "}
+      <button
+      className="toolbar-button paging-last"
         type="button"
         onClick={() => gotoPage(pageCount - 1)}
         disabled={!canNextPage}
       >
-        {">>"}
+        {"⏩"}
       </button>{" "}
       <span>
         Page{" "}
@@ -70,7 +78,7 @@ const Pagination = ({
         ))}
       </select>
     </div>
-  </>
+  </div>
 );
 
 Pagination.propTypes = {
