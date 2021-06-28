@@ -96,7 +96,7 @@ const Table = ({
             {headerGroups.map((headerGroup) => (
               <tr
                 key={`headerrow-${headerGroup.key}`}
-                className="table-column-headers-wrapper"
+                className="grid-column-headers-wrapper"
                 {...headerGroup.getHeaderGroupProps()}
               >
                 {headerGroup.headers.map((column, headerIndex) => (
