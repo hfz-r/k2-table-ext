@@ -36,6 +36,7 @@ const Main = (props) => {
         ),
         SubCell: () => null,
         Aggregated: () => null,
+        collapse: true,
       },
       {
         Header: "InvestorID",
@@ -65,6 +66,7 @@ const Main = (props) => {
         Aggregated: ({ value }) => `${value} setup date`,
         filter: "between",
         Filter: NumberRangeColumnFilter,
+        collapse: true,
       },
       {
         Header: "SetupBy",
@@ -123,10 +125,10 @@ const Main = (props) => {
   );
 
   return (
-    <>
+    <div className="container">
       {/* <button type="button" onClick={resetData}>
-        Reset Data
-      </button>  */}
+          Reset Data
+        </button> */}
       <Table
         columns={columns}
         data={data}
@@ -135,7 +137,7 @@ const Main = (props) => {
         renderSubComponent={renderSubComponent}
         {...props}
       />
-    </>
+    </div>
   );
 };
 
