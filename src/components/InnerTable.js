@@ -62,6 +62,7 @@ const Table = ({ parentRow, childData }) => {
         marginLeft: "auto",
         marginRight: "auto",
         backgroundColor: "floralwhite",
+        border: "0.5px solid black",
       }}
     >
       <thead>
